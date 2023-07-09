@@ -43,11 +43,11 @@ def baixar_midias_do_site(soup, url_site, diretorio_destino):
                 else:
                     baixar_arquivo(url_absoluta, diretorio_destino)
 
-# Obter o diretório padrão de downloads
-diretorio_downloads = os.path.join(os.path.expanduser("~"), "Downloads")
-
 # Solicitar a URL do site como input
 url_site = input("Digite a URL do site: ")
+
+# Obter o diretório padrão de downloads
+diretorio_downloads = os.path.join(os.path.expanduser("~"), "Downloads")
 
 # Diretório de destino para salvar as mídias
 diretorio_destino = input(f"Digite o diretório de destino para salvar as mídias (padrão: {diretorio_downloads}): ")
