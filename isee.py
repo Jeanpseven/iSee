@@ -1,12 +1,12 @@
-import requests
 import os
+import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, urljoin
 
 # Função para verificar se uma URL possui uma das extensões permitidas
 def tem_extensao_permitida(url):
     extensoes_permitidas = ['.mp4', '.mov', '.mp3', '.img', '.jpg', '.jpeg', '.png', '.pdf', '.doc', '.avi', '.mkv', '.mpeg', '.vid']
-    return any(url.lower().endswith(extensao) for extensao in extensoes_permitidas)
+    return any(url.endswith(extensao) for extensao in extensoes_permitidas)
 
 # Função para baixar um arquivo
 def baixar_arquivo(url, diretorio_destino):
@@ -29,11 +29,19 @@ def baixar_arquivos_do_site(soup, url_site, diretorio_destino):
             url_absoluta = urljoin(url_site, url_link)
             baixar_arquivo(url_absoluta, diretorio_destino)
 
+# Obter o diretório padrão de downloads
+diretorio_downloads = os.path.join(os.path.expanduser("~"), "Downloads")
+
 # Solicitar a URL do site como input
 url_site = input("Digite a URL do site: ")
 
-# Criar o diretório de destino para salvar os arquivos
-diretorio_destino = os.path.join(os.path.expanduser("~"), "Downloads")
+# Diretório de destino para salvar os arquivos
+diretorio_destino = input(f"Digite o diretório de destino para salvar os arquivos (padrão: {diretorio_downloads}): ")
+if not diretorio_destino:
+    diretorio_destino = diretorio_downloads
+
+# Criar o diretório de destino, se não existir
+os.makedirs(diretorio_destino, exist_ok=True)
 
 # Fazer a requisição HTTP e obter o conteúdo HTML
 response = requests.get(url_site)
@@ -44,3 +52,6 @@ soup = BeautifulSoup(html, 'html.parser')
 
 # Baixar todos os arquivos permitidos do site
 baixar_arquivos_do_site(soup, url_site, diretorio_destino)
+
+# Exibir o caminho onde os arquivos foram salvos
+print(f"Arquivos salvos em: {diretorio_destino}")
