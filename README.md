@@ -1,2 +1,2 @@
 # iSee
-permite baixar mídias, remover diálogos de login ou cadastro, remover blur de sites
+permite baixar mídias de uma URL fornecida
