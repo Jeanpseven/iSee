@@ -5,8 +5,8 @@ from urllib.parse import urlparse, urljoin
 
 # Função para verificar se uma URL possui uma das extensões permitidas
 def tem_extensao_permitida(url):
-    extensoes_permitidas = ['.mp4', '.mov', '.mp3', '.img', '.jpg', '.jpeg', '.png', '.pdf', '.doc']
-    return any(url.endswith(extensao) for extensao in extensoes_permitidas)
+    extensoes_permitidas = ['.mp4', '.mov', '.mp3', '.img', '.jpg', '.jpeg', '.png', '.pdf', '.doc', '.avi', '.mkv', '.mpeg', '.vid']
+    return any(url.lower().endswith(extensao) for extensao in extensoes_permitidas)
 
 # Função para baixar um arquivo
 def baixar_arquivo(url, diretorio_destino):
