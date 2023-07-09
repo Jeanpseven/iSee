@@ -2,6 +2,7 @@ import os
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, urljoin
+import youtube_dl
 
 # Função para verificar se uma URL possui uma das extensões permitidas
 def tem_extensao_permitida(url):
@@ -20,14 +21,27 @@ def baixar_arquivo(url, diretorio_destino):
     else:
         print(f"Erro ao baixar arquivo: {url}")
 
-# Função para baixar todos os arquivos permitidos do site
-def baixar_arquivos_do_site(soup, url_site, diretorio_destino):
-    links = soup.find_all('a', href=True)
-    for link in links:
-        url_link = link.get('href')
-        if url_link and tem_extensao_permitida(url_link):
-            url_absoluta = urljoin(url_site, url_link)
-            baixar_arquivo(url_absoluta, diretorio_destino)
+# Função para baixar um vídeo
+def baixar_video(url, diretorio_destino):
+    ydl_opts = {
+        'outtmpl': os.path.join(diretorio_destino, '%(title)s.%(ext)s'),
+    }
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        ydl.download([url])
+
+# Função para baixar todas as mídias do site
+def baixar_midias_do_site(soup, url_site, diretorio_destino):
+    midias = soup.find_all('img') + soup.find_all('video') + soup.find_all('audio')
+
+    for midia in midias:
+        url_midia = midia.get('src')
+        if url_midia:
+            url_absoluta = urljoin(url_site, url_midia)
+            if tem_extensao_permitida(url_absoluta):
+                if url_absoluta.endswith('.mp4'):
+                    baixar_video(url_absoluta, diretorio_destino)
+                else:
+                    baixar_arquivo(url_absoluta, diretorio_destino)
 
 # Obter o diretório padrão de downloads
 diretorio_downloads = os.path.join(os.path.expanduser("~"), "Downloads")
@@ -35,8 +49,8 @@ diretorio_downloads = os.path.join(os.path.expanduser("~"), "Downloads")
 # Solicitar a URL do site como input
 url_site = input("Digite a URL do site: ")
 
-# Diretório de destino para salvar os arquivos
-diretorio_destino = input(f"Digite o diretório de destino para salvar os arquivos (padrão: {diretorio_downloads}): ")
+# Diretório de destino para salvar as mídias
+diretorio_destino = input(f"Digite o diretório de destino para salvar as mídias (padrão: {diretorio_downloads}): ")
 if not diretorio_destino:
     diretorio_destino = diretorio_downloads
 
@@ -50,8 +64,8 @@ html = response.content
 # Criar o objeto Beautiful Soup
 soup = BeautifulSoup(html, 'html.parser')
 
-# Baixar todos os arquivos permitidos do site
-baixar_arquivos_do_site(soup, url_site, diretorio_destino)
+# Baixar todas as mídias do site
+baixar_midias_do_site(soup, url_site, diretorio_destino)
 
-# Exibir o caminho onde os arquivos foram salvos
-print(f"Arquivos salvos em: {diretorio_destino}")
+# Exibir o caminho onde as mídias foram salvas
+print(f"Mídias salvas em: {diretorio_destino}")
