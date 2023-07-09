@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Download de Mídias</title>
+</head>
+<body>
+  <h1>Download de Mídias</h1>
+  
+  <form id="downloadForm">
+    <label for="url">URL do site:</label>
+    <input type="text" id="url" name="url" required><br>
+    <label for="destino">Diretório de destino:</label>
+    <input type="text" id="destino" name="destino" required><br>
+    <button type="submit">Baixar Mídias</button>
+  </form>
+
+  <script>
+    // Função para baixar um arquivo
+    function baixarArquivo(url, destino) {
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = '';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // Função para baixar um vídeo
+    function baixarVideo(url, destino) {
+      // Implemente aqui a lógica para baixar vídeos
+      console.log(`Baixando vídeo: ${url}`);
+    }
+
+    // Função para baixar todas as mídias do site
+    function baixarMidiasDoSite(urlSite, destino) {
+      const elementosMidia = document.querySelectorAll('img, video');
+      
+      elementosMidia.forEach(function(elemento) {
+        let urlMidia;
+        if (elemento.tagName === 'IMG') {
+          urlMidia = elemento.src;
+        } else if (elemento.tagName === 'VIDEO') {
+          urlMidia = elemento.currentSrc;
+        }
+        
+        if (urlMidia) {
+          const extensao = urlMidia.split('.').pop().toLowerCase();
+          
+          if (['mp4', 'mov', 'mp3', 'img', 'jpg', 'jpeg', 'png', 'pdf', 'doc', 'avi', 'mkv', 'mpeg', 'vid'].includes(extensao)) {
+            if (extensao === 'mp4') {
+              baixarVideo(urlMidia, destino);
+            } else {
+              baixarArquivo(urlMidia, destino);
+            }
+          }
+        }
+      });
+    }
+
+    // Função para lidar com o envio do formulário
+    function handleFormSubmit(event) {
+      event.preventDefault();
+
+      const form = event.target;
+      const urlSite = form.url.value;
+      const destino = form.destino.value;
+
+      // Baixar todas as mídias do site
+      baixarMidiasDoSite(urlSite, destino);
+
+      // Limpar os campos do formulário
+      form.reset();
+    }
+
+    // Obter o formulário e registrar o evento de envio
+    const downloadForm = document.getElementById('downloadForm');
+    downloadForm.addEventListener('submit', handleFormSubmit);
+  </script>
+</body>
+</html>
