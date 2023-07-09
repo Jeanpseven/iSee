@@ -33,8 +33,7 @@ def baixar_arquivos_do_site(soup, url_site, diretorio_destino):
 url_site = input("Digite a URL do site: ")
 
 # Criar o diretório de destino para salvar os arquivos
-diretorio_destino = input("Digite o diretório de destino para salvar os arquivos: ")
-os.makedirs(diretorio_destino, exist_ok=True)
+diretorio_destino = os.path.join(os.path.expanduser("~"), "Downloads")
 
 # Fazer a requisição HTTP e obter o conteúdo HTML
 response = requests.get(url_site)
