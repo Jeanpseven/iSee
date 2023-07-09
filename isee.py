@@ -16,7 +16,7 @@ def baixar_arquivo(url, diretorio_destino):
         with open(nome_arquivo, 'wb') as arquivo:
             for chunk in response.iter_content(1024):
                 arquivo.write(chunk)
-        print(f"Arquivo baixado: {nome_arquivo}")
+        print(f"Arquivo baixado: {os.path.basename(urlparse(url).path)}")
     else:
         print(f"Erro ao baixar arquivo: {url}")
 
